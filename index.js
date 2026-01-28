@@ -43,7 +43,7 @@ app.use('/api', require('./routes/user'));
 app.get('/', (req, res) => {
   res.json({ 
     message: 'API is running...',
-    status: 'healthy'
+    status: 'healthys'
   });
 });
 
