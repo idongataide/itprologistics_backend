@@ -122,12 +122,15 @@ router.put('/admin/rides/:rideId/assign', auth, isAdmin, async (req, res) => {
 
 
     // Check if ride is in pending state
-    if (ride.status !== 'pending') {
+   const allowedStatuses = ['pending', 'awaiting_driver_confirmation'];
+
+    if (!allowedStatuses.includes(ride.status)) {
       return res.status(400).json({
         success: false,
-        message: 'Ride must be in pending state to assign driver'
+        message: 'Ride must be in pending or awaiting driver confirmation state to assign driver'
       });
     }
+
 
     // Check if driver exists - find DriverDetail first
     let driverDetail = await DriverDetail.findById(driverId);
