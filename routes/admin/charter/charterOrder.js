@@ -208,6 +208,13 @@ router.patch('/orders/:id/status', auth, isAdmin, async (req, res) => {
     switch (status) {
       case 'accepted':
         order.acceptedAt = new Date();
+        // Get the vehicle and assign its driver to the order
+        if (order.vehicleId) {
+          const vehicle = await CharterVehicle.findById(order.vehicleId);
+          if (vehicle && vehicle.driverId) {
+            order.driverId = vehicle.driverId;
+          }
+        }
         break;
       case 'in_progress':
         order.startedAt = new Date();

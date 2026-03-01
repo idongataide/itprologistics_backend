@@ -52,6 +52,7 @@ router.post('/book', auth, async (req, res) => {
       pickupLocation,
       destination,
       vehicleNeeded,
+      vehicleId: vehicleNeeded,  // Set vehicleId to the selected vehicle
       passengers: passengers || 1,
       tripDate: new Date(tripDate),
       tripTime,

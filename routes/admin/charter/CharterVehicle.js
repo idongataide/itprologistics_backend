@@ -113,8 +113,7 @@ router.post('/vehicles', auth, isAdmin, upload.single('thumbnail'), async (req, 
       capacity: capacity ? parseInt(capacity) : undefined,
       fuelType,
       features: parsedFeatures,
-      status: 'available',
-      isCharter: true // Custom field to identify charter vehicles
+      status: 'available'
     });
     
     await vehicle.save();
@@ -220,10 +219,7 @@ router.put('/vehicles/:id', auth, isAdmin, upload.single('thumbnail'), async (re
   try {
     const { make, model, year, licensePlate, color, vehicleType, status, capacity, fuelType, features } = req.body;
     
-    const vehicle = await Vehicle.findOne({ 
-      _id: req.params.id,
-      isCharter: true 
-    });
+    const vehicle = await Vehicle.findById(req.params.id);
     
     if (!vehicle) {
       // Delete uploaded file if vehicle not found
@@ -239,8 +235,7 @@ router.put('/vehicles/:id', auth, isAdmin, upload.single('thumbnail'), async (re
     // Check if license plate is being changed to one that already exists
     if (licensePlate && licensePlate !== vehicle.licensePlate) {
       const existingVehicle = await Vehicle.findOne({ 
-        licensePlate: licensePlate.toUpperCase(),
-        isCharter: true 
+        licensePlate: licensePlate.toUpperCase()
       });
       if (existingVehicle) {
         // Delete uploaded file if license plate exists
@@ -317,10 +312,7 @@ router.put('/vehicles/:id', auth, isAdmin, upload.single('thumbnail'), async (re
 // @access  Admin
 router.delete('/vehicles/:id', auth, isAdmin, async (req, res) => {
   try {
-    const vehicle = await Vehicle.findOne({ 
-      _id: req.params.id,
-      isCharter: true 
-    });
+    const vehicle = await Vehicle.findById(req.params.id);
     
     if (!vehicle) {
       return res.status(404).json({

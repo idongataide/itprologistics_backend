@@ -41,6 +41,8 @@ app.use('/api', require('./routes/admin/vehicle'));
 app.use('/api', require('./routes/admin/rides'));
 app.use('/api/rides', require('./routes/rides'));
 app.use('/api', require('./routes/user'));
+app.use('/api/charter-driver', require('./routes/charterDriver'));
+
 
 // Charter Routes
 app.use('/api/admin/charter', require('./routes/admin/charter/charterDriver'));
@@ -48,6 +50,7 @@ app.use('/api/admin/charter', require('./routes/admin/charter/CharterVehicle'));
 app.use('/api/admin/charter', require('./routes/admin/charter/charterOrder'));
 app.use('/api/charter', require('./routes/charter'));
 app.use('/api/charter', require('./routes/charterVehicles'));
+app.use('/api/charter-driver', require('./routes/charterDriver'));
 
 // Basic Route
 app.get('/', (req, res) => {
