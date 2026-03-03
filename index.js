@@ -40,8 +40,7 @@ app.use('/api/driver', require('./routes/driver'));
 app.use('/api', require('./routes/admin/vehicle'));
 app.use('/api', require('./routes/admin/rides'));
 app.use('/api/rides', require('./routes/rides'));
-app.use('/api', require('./routes/user'));
-app.use('/api/charter-driver', require('./routes/charterDriver'));
+app.use('/api', require('./routes/user'));app.use('/api/notifications', require('./routes/notifications'));app.use('/api/charter-driver', require('./routes/charterDriver'));
 
 
 // Charter Routes

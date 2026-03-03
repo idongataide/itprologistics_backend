@@ -4,7 +4,9 @@
 const express = require('express');
 const router = express.Router();
 const CharterOrder = require('../models/charter/CharterOrder');
+const User = require('../models/User');
 const auth = require('../middleware/authMiddleware');
+const { createNotification, notifyAdmins } = require('../services/notificationService');
 
 // @route   GET /api/charter/orders
 // @desc    Get user's charter orders
@@ -61,6 +63,23 @@ router.post('/book', auth, async (req, res) => {
     });
 
     await newOrder.save();
+
+    // Create notification for user
+    await createNotification(
+      req.user.id,
+      'order_created',
+      'Order Created',
+      `Your charter order from ${pickupLocation} to ${destination} has been created.`,
+      { orderId: newOrder._id }
+    );
+
+    // Notify all admins
+    await notifyAdmins(
+      'order_created',
+      'New Charter Order',
+      `A new charter order from ${pickupLocation} to ${destination} has been created.`,
+      { orderId: newOrder._id }
+    );
 
     res.status(201).json({
       success: true,

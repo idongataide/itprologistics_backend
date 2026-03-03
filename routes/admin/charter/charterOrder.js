@@ -7,6 +7,7 @@ const User = require('../../../models/User');
 const CharterDriver = require('../../../models/charter/CharterDriver');
 const CharterVehicle = require('../../../models/charter/CharterVehicle');
 const auth = require('../../../middleware/authMiddleware');
+const { createNotification } = require('../../../services/notificationService');
 
 // Admin verification middleware
 const isAdmin = async (req, res, next) => {
@@ -228,6 +229,44 @@ router.patch('/orders/:id/status', auth, isAdmin, async (req, res) => {
     }
 
     await order.save();
+
+    // Send notification to user based on status
+    let notificationType = '';
+    let notificationTitle = '';
+    let notificationMessage = '';
+
+    switch (status) {
+      case 'accepted':
+        notificationType = 'admin_approval';
+        notificationTitle = 'Order Approved';
+        notificationMessage = 'Your charter order has been approved and a driver has been assigned.';
+        break;
+      case 'in_progress':
+        notificationType = 'order_in_progress';
+        notificationTitle = 'Trip Started';
+        notificationMessage = 'Your charter trip has started.';
+        break;
+      case 'completed':
+        notificationType = 'order_completed';
+        notificationTitle = 'Trip Completed';
+        notificationMessage = 'Your charter trip has been completed.';
+        break;
+      case 'cancelled':
+        notificationType = 'order_cancelled';
+        notificationTitle = 'Order Cancelled';
+        notificationMessage = 'Your charter order has been cancelled.';
+        break;
+    }
+
+    if (notificationType && order.userId) {
+      await createNotification(
+        order.userId,
+        notificationType,
+        notificationTitle,
+        notificationMessage,
+        { orderId: order._id }
+      );
+    }
 
     res.json({
       success: true,
